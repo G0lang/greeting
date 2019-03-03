@@ -6,6 +6,11 @@ import (
 	"net/http"
 )
 
+var (
+	// VERSION keeps the version of application
+	VERSION = 0.1
+)
+
 func main() {
 	// TODO: for keep it simple i dont use router !
 	http.HandleFunc("/hello", greeting)
