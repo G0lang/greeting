@@ -11,7 +11,7 @@ import (
 
 var (
 	// VERSION keeps the version of application
-	VERSION = 0.1
+	VERSION string
 	// PORT contain the expose port
 	PORT string
 )
@@ -22,7 +22,7 @@ func main() {
 	PortEnv()
 
 	// init http server
-	log.Println("Server Start On Port:", PORT)
+	log.Printf("Server version:%v Start On Port:%v", VERSION, PORT)
 	log.Fatal(http.ListenAndServe(":"+PORT, Router()))
 }
 

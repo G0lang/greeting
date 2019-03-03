@@ -66,7 +66,7 @@ func TestGreeting(t *testing.T) {
 
 			if status := rr.Code; status != tt.respCode {
 				t.Errorf("handler returned wrong status code: got %v want %v",
-					status, http.StatusOK)
+					status, tt.respCode)
 			}
 
 			if rr.Body.String() != tt.body {
