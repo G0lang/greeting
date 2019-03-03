@@ -1,12 +1,26 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestRouting(t *testing.T) {
+	srv := httptest.NewServer(Router())
+	defer srv.Close()
+
+	res, err := http.Get(fmt.Sprintf("%s/hello", srv.URL))
+	if err != nil {
+		t.Fatalf("could not send get request: %v ", err)
+	}
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("expect status ok ; got %v", res.StatusCode)
+	}
+}
+
+func TestGreeting(t *testing.T) {
 	tests := []struct {
 		name     string
 		method   string
@@ -17,7 +31,6 @@ func TestRouting(t *testing.T) {
 	}{
 		{name: "get", method: "GET", path: "/hello", param: "", respCode: 200, body: "Hello stranger!."},
 		{name: "getWithParam", method: "GET", path: "/hello", param: "?name=nikaein", respCode: 200, body: "Hello nikaein!."},
-		{name: "post", method: "POST", path: "/hello", param: "", respCode: 501, body: "Method Not Implemented"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

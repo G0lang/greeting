@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -14,8 +15,6 @@ var (
 )
 
 func main() {
-	// TODO: for keep it simple i dont use router !
-	http.HandleFunc("/hello", greeting)
 
 	// get port from
 	var PORT string
@@ -24,25 +23,26 @@ func main() {
 	}
 
 	// init http server
-	log.Println("Starting Server On Port:", PORT)
-	log.Fatal(http.ListenAndServe(":"+PORT, nil))
+	log.Println("Server Start On Port:", PORT)
+	log.Fatal(http.ListenAndServe(":"+PORT, Router()))
+}
+
+// Router return gorilla mux router
+func Router() *mux.Router {
+	r := mux.NewRouter()
+	r.HandleFunc("/hello", greeting).Methods("GET")
+	return r
 }
 
 // greeting get name and say hello to it if not name provided counsider you as a stranger! .
 func greeting(w http.ResponseWriter, r *http.Request) {
-	// TODO: use router to avoid check method in each function.
-	if r.Method == "GET" {
-		name := r.FormValue("name")
-		// TODO: shuld i use regex for name whats the name condition?
-		w.WriteHeader(http.StatusOK)
-		if name == "" {
-			fmt.Fprint(w, "Hello stranger!.")
-		} else {
-			fmt.Fprint(w, "Hello ", name, "!.")
-		}
-
+	name := r.FormValue("name")
+	// TODO: shuld i use regex for name whats the name condition?
+	w.WriteHeader(http.StatusOK)
+	if name == "" {
+		fmt.Fprint(w, "Hello stranger!.")
 	} else {
-		w.WriteHeader(http.StatusNotImplemented)
-		fmt.Fprintf(w, "Method Not Implemented")
+		fmt.Fprint(w, "Hello ", name, "!.")
 	}
+
 }
