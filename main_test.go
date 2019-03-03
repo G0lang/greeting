@@ -1,11 +1,30 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	PORT = os.Getenv("PORT")
+	flag.Parse()
+	exitCode := m.Run()
+
+	os.Exit(exitCode)
+}
+
+func TestPort(t *testing.T) {
+	exp := PortEnv()
+	if PORT != exp {
+		t.Errorf("handler returned unexpected Port: got %v want %v",
+			PORT, exp)
+
+	}
+}
 
 func TestRouting(t *testing.T) {
 	srv := httptest.NewServer(Router())

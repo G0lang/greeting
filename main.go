@@ -12,19 +12,26 @@ import (
 var (
 	// VERSION keeps the version of application
 	VERSION = 0.1
+	// PORT contain the expose port
+	PORT string
 )
 
 func main() {
 
-	// get port from
-	var PORT string
-	if PORT = os.Getenv("PORT"); PORT == "" {
-		PORT = "8080"
-	}
+	//init port
+	PortEnv()
 
 	// init http server
 	log.Println("Server Start On Port:", PORT)
 	log.Fatal(http.ListenAndServe(":"+PORT, Router()))
+}
+
+// PortEnv return port from os env
+func PortEnv() string {
+	if PORT = os.Getenv("PORT"); PORT == "" {
+		PORT = "8080"
+	}
+	return PORT
 }
 
 // Router return gorilla mux router
