@@ -2,16 +2,30 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
+
+	log "github.com/sirupsen/logrus"
+)
+
+var (
+	// VERSION keeps the version of application
+	VERSION = 0.1
 )
 
 func main() {
 	// TODO: for keep it simple i dont use router !
 	http.HandleFunc("/hello", greeting)
-	// TODO: get port from env .
-	// TODO: use logrus for better logging .
-	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	// get port from
+	var PORT string
+	if PORT = os.Getenv("PORT"); PORT == "" {
+		PORT = "8080"
+	}
+
+	// init http server
+	log.Println("Starting Server On Port:", PORT)
+	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
 
 // greeting get name and say hello to it if not name provided counsider you as a stranger! .
