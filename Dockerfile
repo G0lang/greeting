@@ -13,7 +13,5 @@ RUN SHORTHASH=$(git log -n1 --pretty="format:%h") && \
 # Final stage
 FROM gcr.io/distroless/base
 COPY --from=0 /src/greeting /
-# TODO:fix read from env
-ENV PORT="8080" 
 EXPOSE 8080
 ENTRYPOINT ["/greeting"]

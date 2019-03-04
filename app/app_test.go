@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"flag"
@@ -7,27 +7,25 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
+var a App
+
 func TestMain(m *testing.M) {
-	PORT = os.Getenv("PORT")
+	a = App{}
+	a.Port = "8080"
 	flag.Parse()
 	exitCode := m.Run()
 
 	os.Exit(exitCode)
 }
 
-func TestPort(t *testing.T) {
-	exp := PortEnv()
-	if PORT != exp {
-		t.Errorf("handler returned unexpected Port: got %v want %v",
-			PORT, exp)
-
-	}
-}
-
 func TestRouting(t *testing.T) {
-	srv := httptest.NewServer(Router())
+	a = App{}
+	a.RouterInit()
+	srv := httptest.NewServer(a.Router)
 	defer srv.Close()
 
 	res, err := http.Get(fmt.Sprintf("%s/hello", srv.URL))
@@ -40,6 +38,10 @@ func TestRouting(t *testing.T) {
 }
 
 func TestGreeting(t *testing.T) {
+	a = App{}
+	// TODO:use same db connection seperate for test
+	a.InitializeDB()
+	a.RouterInit()
 	tests := []struct {
 		name     string
 		method   string
@@ -61,7 +63,7 @@ func TestGreeting(t *testing.T) {
 			}
 
 			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(greeting)
+			handler := http.HandlerFunc(a.greeting)
 			handler.ServeHTTP(rr, req)
 
 			if status := rr.Code; status != tt.respCode {

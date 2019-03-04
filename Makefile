@@ -65,10 +65,19 @@ dbuild-nc:
 
 # Run docker image.
 drun:
-	@ docker run -p ${PORT}:${PORT} ${LATEST}
+	@ docker run --net=host --env-file=.env -p ${PORT}:${PORT} ${LATEST}
 
 # Clean Docker.
 dclean:
 	@ docker container prune -f 
 	@ docker image prune -f 
 	@ docker image rm ${IMGTAG} ${LATEST}
+
+
+# cockroach sql cli.
+roachcli:
+	@ docker exec -it roach1 ./cockroach sql --insecure
+
+# cockroach run 
+roachup:
+	@ docker-compose up

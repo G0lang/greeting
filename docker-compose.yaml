@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  roach1:
+    container_name: roach1
+    image: cockroachdb/cockroach:v2.1.5
+    command: start --insecure
+    ports:
+      - "26257:26257"
+      - "1234:8080"
+    volumes:
+      - ${DATA_DIR}/roach1:/cockroach/cockroach-data
+    networks:
+      roachnet:
+        aliases:
+          - roach1
+
+  roach2:
+    container_name: roach2
+    image: cockroachdb/cockroach:v2.1.5
+    command: start --insecure --join=roach1
+    volumes:
+      - ${DATA_DIR}/roach2:/cockroach/cockroach-data
+    depends_on:
+      - roach1
+    networks:
+      roachnet:
+        aliases:
+          - roach2
+
+  roach3:
+    container_name: roach3
+    image: cockroachdb/cockroach:v2.1.5
+    command: start --insecure --join=roach1
+    volumes:
+      - ${DATA_DIR}/roach3:/cockroach/cockroach-data
+    depends_on:
+      - roach1
+    networks:
+      roachnet:
+        aliases:
+          - roach3
+
+networks:
+  roachnet:
+    driver: bridge
