@@ -53,7 +53,14 @@ func (a *App) Run() {
 // RouterInit initalize all route
 func (a *App) RouterInit() {
 	a.Router = mux.NewRouter()
-	a.Router.HandleFunc("/hello", a.greeting).Methods("GET")
+	a.Router.HandleFunc("/hello", logRequest(a.greeting)).Methods("GET")
+}
+
+func logRequest(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("RequestURI: %s RemoteAddr: %v", r.RequestURI, r.RemoteAddr)
+		next.ServeHTTP(w, r)
+	}
 }
 
 // greeting get name and say hello to it if not name provided counsider you as a stranger! .
