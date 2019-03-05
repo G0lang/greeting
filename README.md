@@ -17,8 +17,8 @@ make roachup
 ```sh
 make roachcli
 CREATE DATABASE greeting;
-CREATE USER account_user;
-GRANT ALL ON DATABASE greeting TO account_user;
+CREATE USER greeting;
+GRANT ALL ON DATABASE greeting TO greeting;
 ```
 
 ### run project
